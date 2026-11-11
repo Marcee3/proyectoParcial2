@@ -1,15 +1,19 @@
-
 name: Integracion Continua
 
 on:
   push:
     branches: [main]
+
   pull_request:
     branches: [main]
 
+  workflow_dispatch:
+
 jobs:
-  pruebas:
-    name: Pruebas unitarias
+
+  # JOB 1: Analisis de codigo
+  lint:
+    name: ESLint
     runs-on: ubuntu-latest
 
     steps:
@@ -25,11 +29,13 @@ jobs:
       - name: Instalar dependencias
         run: npm ci
 
-      - name: Ejecutar pruebas
-        run: npm run test
+      - name: Ejecutar ESLint
+        run: npm run lint
 
-  cobertura:
-    name: Cobertura de codigo
+  # JOB 2: Pruebas unitarias y cobertura
+  test:
+    name: Pruebas y cobertura
+    needs: lint
     runs-on: ubuntu-latest
 
     steps:
@@ -48,22 +54,28 @@ jobs:
       - name: Generar cobertura
         run: npm run coverage
 
-  eslint:
-    name: Analisis de codigo
+      - name: Guardar reporte de cobertura
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./coverage
+
+  # JOB 3: Despliegue en GitHub Pages
+  deploy:
+    name: Publicar en GitHub Pages
+    needs: test
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+
     runs-on: ubuntu-latest
 
+    permissions:
+      pages: write
+      id-token: write
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
     steps:
-      - name: Descargar repositorio
-        uses: actions/checkout@v4
-
-      - name: Configurar Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: npm
-
-      - name: Instalar dependencias
-        run: npm ci
-
-      - name: Ejecutar ESLint
-        run: npm run lint
+      - name: Publicar reporte
+        id: deployment
+        uses: actions/deploy-pages@v4
