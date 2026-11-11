@@ -1,6 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { restar, multiplicar, potencia, modulo, redondear, absoluto, esMultiplo, sumarArreglo, menorDeArreglo, contarPares} from '../src/moduloMarce'
-import { calcularPropina, calcularDescuentoFijo, calcularEnvio, calcularPagoSemanal, calcularComision, puedeComprar, calcularCalificacionFinal, validarExistencia, calcularPuntosCompra, estadoPedido} from '../src/moduloMarce'
+import { restar, multiplicar, potencia, modulo, redondear, absoluto, esMultiplo, sumarArreglo, menorDeArreglo, contarPares, calcularPropina, calcularDescuentoFijo, calcularEnvio, calcularPagoSemanal, calcularComision, puedeComprar, calcularCalificacionFinal, validarExistencia, calcularPuntosCompra, estadoPedido} from '../src/moduloMarce'
 
 /* Prueba 1 */
 describe('restar', () => {
